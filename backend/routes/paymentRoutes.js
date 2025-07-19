@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Razorpay = require("razorpay");
+require("dotenv").config();
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -9,17 +10,16 @@ const razorpay = new Razorpay({
 
 router.post("/create-order", async (req, res) => {
   const options = {
-    amount: 50000, // 500.00 INR (in paise)
+    amount: 50000, // ₹500
     currency: "INR",
-    receipt: "receipt_order_74394",
+    receipt: "receipt_order_123",
   };
 
   try {
     const order = await razorpay.orders.create(options);
     res.json(order);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Something went wrong");
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 
