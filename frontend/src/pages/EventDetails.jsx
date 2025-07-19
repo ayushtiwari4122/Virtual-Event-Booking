@@ -1,22 +1,43 @@
-const handlePayment = async () => {
-  const res = await fetch("http://localhost:5000/api/create-order", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" }
-  });
-  const data = await res.json();
 
-  const options = {
-    key: "rzp_test_yourid", // or use env
-    amount: data.amount,
-    currency: data.currency,
-    order_id: data.id,
-    handler: (response) => {
-      alert("Payment successful!");
-      console.log(response);
-    },
-    theme: { color: "#3399cc" }
+import React from 'react'
+
+const EventDetails = () => {
+  const handlePayment = async () => {
+    try {
+      const response = await fetch("https://your-backend-url/api/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const order = await response.json();
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Virtual Event Booking",
+        order_id: order.id,
+        handler: function (response) {
+          alert("Payment Successful!");
+          console.log(response);
+        },
+        theme: { color: "#3399cc" },
+      };
+
+      const razor = new window.Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error(error);
+      alert("Payment Failed");
+    }
   };
 
-  const rzp = new window.Razorpay(options);
-  rzp.open();
-};
+  return (
+    <div>
+      <h1>Event Details Page</h1>
+      <button onClick={handlePayment}>Book Now</button>
+    </div>
+  )
+}
+
+export default EventDetails;

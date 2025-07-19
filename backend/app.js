@@ -15,6 +15,8 @@ mongoose.connect(process.env.MONGO_URI)
   .catch((err) => console.log(err));
 
 app.use("/api", require("./routes/bookingRoutes"));
+app.use("/api", require("./routes/paymentRoutes"));
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
